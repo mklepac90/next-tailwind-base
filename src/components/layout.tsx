@@ -6,9 +6,12 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   return (
-    <>
+    <div className="flex flex-col h-screen">
       <SiteHeader />
-      <main>{children}</main>
-    </>
+
+      <main className="flex-1">
+        {children}
+      </main>
+    </div>
   )
 }

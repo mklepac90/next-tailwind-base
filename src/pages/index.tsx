@@ -1,13 +1,9 @@
 import Head from "next/head";
-import Link from "next/link";
-
-import { siteConfig } from "@/config/site";
-import { Layout } from "@/components/layout";
 import { Input } from "@/components/ui/input";
 
 export default function IndexPage() {
   return (
-    <Layout>
+    <>
       <Head>
         <title>Base Template</title>
         <meta name="description" content="Base Template" />
@@ -23,6 +19,6 @@ export default function IndexPage() {
         </div>
         <Input type="email" placeholder="Email" />
       </section>
-    </Layout>
+      </>
   );
 }
