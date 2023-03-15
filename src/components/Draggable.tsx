@@ -6,14 +6,15 @@ type DraggableProps = {
   id: string,
   content: string,
   color: string,
-  gridSize: number
+  gridSize: number,
+  sizeMultiplier: number,
   pos: {
     x: number,
     y: number,
   }
 }
 
-const Draggable = ({ id, content, color, pos, gridSize }: DraggableProps) => {
+const Draggable = ({ id, content, color, pos, gridSize, sizeMultiplier }: DraggableProps) => {
   const {
     attributes,
     isDragging,
@@ -27,17 +28,17 @@ const Draggable = ({ id, content, color, pos, gridSize }: DraggableProps) => {
   return (
     <button
       ref={setNodeRef}
-      className={`${color} border-solid border-2 border-black`}
+      className={`${color} border-solid border-4 border-green-500`}
       style={{
-        position: "relative",
+        position: "absolute",
         left: `${pos.x}px`,
         top: `${pos.y}px`,
         transform: CSS.Translate.toString(transform),
         boxShadow: isDragging
           ? '-1px 0 15px 0 rgba(34, 33, 81, 0.01), 0px 15px 15px 0 rgba(34, 33, 81, 0.25)'
           : undefined,
-        width: gridSize * 6,
-        height: gridSize * 6,
+        width: gridSize * sizeMultiplier,
+        height: gridSize * sizeMultiplier,
       }}
       {...attributes}
       {...listeners}

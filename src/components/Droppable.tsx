@@ -12,7 +12,7 @@ const Droppable = ({id, gridSize, children}: DroppableProps) => {
   return (
     <div
     ref={setNodeRef}
-    className="flex-1"
+    className="bg-black w-full h-full"
     style={{
       backgroundSize: `${gridSize}px ${gridSize}px`,
       backgroundImage: "linear-gradient(to right, grey 1px, transparent 1px), linear-gradient(to bottom, grey 1px, transparent 1px)"

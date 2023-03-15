@@ -5,7 +5,9 @@ import { useMemo, useState } from "react";
 import { createSnapModifier, restrictToParentElement } from '@dnd-kit/modifiers';
 
 const DROP_ID = 'grid';
-const GRID_SIZE = 30;
+const GRID_DIMENSIONS = 800;
+const GRID_SIZE = 20; // size of each square within a grid
+const NOTE_SIZE_MULTIPLIER = 6;
 
 type Note = {
   _id: string,
@@ -32,8 +34,17 @@ const notesData: Note[] = [
     content: "Michael",
     color: 'bg-blue-200',
     position: {
-      x: 1560,
-      y: 720
+      x: GRID_DIMENSIONS - (GRID_SIZE * NOTE_SIZE_MULTIPLIER),
+      y: GRID_DIMENSIONS - (GRID_SIZE * NOTE_SIZE_MULTIPLIER),
+    }
+  },
+  {
+    _id: "3",
+    content: "Midpoint",
+    color: 'bg-green-200',
+    position: {
+      x: (GRID_DIMENSIONS - (GRID_SIZE * NOTE_SIZE_MULTIPLIER)) / 2,
+      y: (GRID_DIMENSIONS - (GRID_SIZE * NOTE_SIZE_MULTIPLIER)) / 2,
     }
   }
 ];
@@ -43,6 +54,7 @@ export default function Grid() {
 
   function handleDragEnd(event: DragEndEvent) {
     const {x, y} = event.delta;
+    console.log(`x:${x}, y:${y}`);
 
     const note: Note = notes.find((n) => n._id === event.active.id)!;
 
@@ -60,16 +72,20 @@ export default function Grid() {
   const snapToGrid = useMemo(() => createSnapModifier(GRID_SIZE), [GRID_SIZE]);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="mx-auto mt-6" style={{
+      position: "relative",
+      height: `${GRID_DIMENSIONS}px`,
+      width: `${GRID_DIMENSIONS}px`,
+    }}>
     <DndContext onDragEnd={handleDragEnd} modifiers={[snapToGrid, restrictToParentElement]}>
       <Droppable id={DROP_ID} gridSize={GRID_SIZE}>
         {
           notes.map((note) => (
-            <Draggable key={note._id} id={note._id} gridSize={GRID_SIZE} content={note.content} color={note.color} pos={note.position} />
+            <Draggable key={note._id} id={note._id} gridSize={GRID_SIZE} sizeMultiplier={NOTE_SIZE_MULTIPLIER} content={note.content} color={note.color} pos={note.position} />
           ))
         }
       </Droppable>
     </DndContext>
-    </div>
+  </div>
   );
 }
