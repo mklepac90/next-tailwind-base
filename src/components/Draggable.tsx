@@ -5,6 +5,7 @@ import { CSS } from '@dnd-kit/utilities';
 type DraggableProps = {
   id: string,
   content: string,
+  categories: string[],
   color: string,
   gridSize: number,
   sizeMultiplier: number,
@@ -14,7 +15,7 @@ type DraggableProps = {
   }
 }
 
-const Draggable = ({ id, content, color, pos, gridSize, sizeMultiplier }: DraggableProps) => {
+const Draggable = ({ id, content, categories, color, gridSize, sizeMultiplier, pos }: DraggableProps) => {
   const {
     attributes,
     isDragging,
@@ -44,6 +45,12 @@ const Draggable = ({ id, content, color, pos, gridSize, sizeMultiplier }: Dragga
       {...listeners}
     >
       {content}
+
+      <br />
+
+      <span className="break-words">
+      {categories.join(',')}
+      </span>
     </button>
   );
 }

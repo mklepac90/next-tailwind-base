@@ -5,13 +5,15 @@ import { useMemo, useState } from "react";
 import { createSnapModifier, restrictToParentElement } from '@dnd-kit/modifiers';
 
 const DROP_ID = 'grid';
-const GRID_DIMENSIONS = 800;
+const GRID_DIMENSIONS = 800; // grid h & w 
+const QUADRANTS = {one: 'one', two: 'two', three: 'three', four: 'four'};
 const GRID_SIZE = 20; // size of each square within a grid
-const NOTE_SIZE_MULTIPLIER = 6;
+const NOTE_SIZE_MULTIPLIER = 6; // how many squares is note h & w
 
 type Note = {
   _id: string,
   content: string,
+  categories: string[],
   color: string,
   position: {
     x: number,
@@ -22,7 +24,8 @@ type Note = {
 const notesData: Note[] = [
   {
     _id: "1",
-    content: "Yesh",
+    content: "Top Left",
+    categories: ['one'],
     color: 'bg-yellow-200',
     position: {
       x: 0,
@@ -31,7 +34,8 @@ const notesData: Note[] = [
   },
   {
     _id: "2",
-    content: "Michael",
+    content: "Bottom Right",
+    categories: ['four'],
     color: 'bg-blue-200',
     position: {
       x: GRID_DIMENSIONS - (GRID_SIZE * NOTE_SIZE_MULTIPLIER),
@@ -41,6 +45,7 @@ const notesData: Note[] = [
   {
     _id: "3",
     content: "Midpoint",
+    categories: ['one', 'two', 'three', 'four'],
     color: 'bg-green-200',
     position: {
       x: (GRID_DIMENSIONS - (GRID_SIZE * NOTE_SIZE_MULTIPLIER)) / 2,
@@ -48,6 +53,35 @@ const notesData: Note[] = [
     }
   }
 ];
+
+const categorizeNote = (note: Note) => {
+  const categories: string[] = [];
+  const axes = GRID_DIMENSIONS / 2;
+  const {x, y} = note.position;
+  const offset = GRID_SIZE * NOTE_SIZE_MULTIPLIER;
+
+  const coords: [number, number][] = [[x, y], [x + offset , y], [x , y + offset], [x + offset, y + offset]];
+
+  coords.forEach(coord => {
+    if (coord[0] < axes && coord[1] < axes) {
+      categories.push(QUADRANTS.one);
+    };
+  
+    if (coord[0] > axes && coord[1] < axes) {
+      categories.push(QUADRANTS.two);
+    };
+  
+    if (coord[0] < axes && coord[1] > axes) {
+      categories.push(QUADRANTS.three);
+    };
+  
+    if (coord[0] > axes && coord[1] > axes) {
+      categories.push(QUADRANTS.four);
+    };
+  })
+ 
+  return [...new Set(categories)];
+};
 
 export default function Grid() {
   const [notes, setNotes] = useState(notesData);
@@ -60,6 +94,7 @@ export default function Grid() {
 
     note.position.x += x;
     note.position.y += y;
+    note.categories = categorizeNote(note);
 
     const notesPositioned = notes.map((n) => {
       if (n._id === note._id) return note;
@@ -81,7 +116,7 @@ export default function Grid() {
       <Droppable id={DROP_ID} gridSize={GRID_SIZE}>
         {
           notes.map((note) => (
-            <Draggable key={note._id} id={note._id} gridSize={GRID_SIZE} sizeMultiplier={NOTE_SIZE_MULTIPLIER} content={note.content} color={note.color} pos={note.position} />
+            <Draggable key={note._id} id={note._id} gridSize={GRID_SIZE} sizeMultiplier={NOTE_SIZE_MULTIPLIER} content={note.content} color={note.color} pos={note.position} categories={note.categories} />
           ))
         }
       </Droppable>
