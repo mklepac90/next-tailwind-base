@@ -23,7 +23,7 @@ const Draggable = ({ note, squareSize, noteSize }: DraggableProps) => {
   return (
     <button
       ref={setNodeRef}
-      className={`${note.color} border-solid border-4 border-green-500`}
+      className={`${note.color} p-2 shadow-md border border-gray-200`}
       style={{
         position: "absolute",
         left: `${note.position.x}px`,

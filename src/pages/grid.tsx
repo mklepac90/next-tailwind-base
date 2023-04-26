@@ -28,7 +28,7 @@ const notesData: Note[] = [
     content: "Top Left",
     categories: ['one'],
     color: 'bg-yellow-200',
-    rank: 4,
+    rank: 6,
     position: {
       x: 0,
       y: 0
@@ -38,7 +38,7 @@ const notesData: Note[] = [
     _id: "2",
     content: "Bottom Right",
     categories: ['four'],
-    color: 'bg-blue-200',
+    color: 'bg-yellow-200',
     rank: 1,
     position: {
       x: GRID_DIMENSIONS - (GRID_SQUARE_SIZE * NOTE_SIZE),
@@ -49,8 +49,8 @@ const notesData: Note[] = [
     _id: "3",
     content: "Midpoint",
     categories: ['one', 'two', 'three', 'four'],
-    color: 'bg-green-200',
-    rank: 3,
+    color: 'bg-yellow-200',
+    rank: 4,
     position: {
       x: (GRID_DIMENSIONS - (GRID_SQUARE_SIZE * NOTE_SIZE)) / 2,
       y: (GRID_DIMENSIONS - (GRID_SQUARE_SIZE * NOTE_SIZE)) / 2,
@@ -89,7 +89,7 @@ const categorizeNote = (note: Note) => {
 
 const rankNote = (note: Note) => {
   const {x, y} = note.position;
-  const zones = [1, 2, 3, 4];
+  const zones = [1, 2, 3, 4, 5, 6];
   const zoneSize = GRID_DIMENSIONS / zones.length;
   let rank;
 
@@ -127,10 +127,13 @@ export default function Grid() {
   const snapToGrid = useMemo(() => createSnapModifier(GRID_SQUARE_SIZE), [GRID_SQUARE_SIZE]);
 
   return (
-    <div className="mx-auto mt-6" style={{
+    <div className="mx-auto my-10 shadow-lg" style={{
       position: "relative",
-      height: `${GRID_DIMENSIONS}px`,
-      width: `${GRID_DIMENSIONS}px`,
+      height: `${GRID_DIMENSIONS + 1}px`,
+      width: `${GRID_DIMENSIONS + 1}px`,
+      background: 
+      `linear-gradient(#DCDCDC, #DCDCDC) no-repeat center/2px 100%, linear-gradient(#DCDCDC, #DCDCDC) no-repeat center/100% 2px`
+    
     }}>
     <DndContext onDragEnd={handleDragEnd} modifiers={[snapToGrid, restrictToParentElement]}>
       <Droppable id={DROP_ID} gridSize={GRID_SQUARE_SIZE}>
