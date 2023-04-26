@@ -1,21 +1,15 @@
 import { useDraggable } from "@dnd-kit/core";
 import React from 'react'
 import { CSS } from '@dnd-kit/utilities';
+import { Note } from "@/pages/grid";
 
 type DraggableProps = {
-  id: string,
-  content: string,
-  categories: string[],
-  color: string,
-  gridSize: number,
-  sizeMultiplier: number,
-  pos: {
-    x: number,
-    y: number,
-  }
+  note: Note,
+  squareSize: number,
+  noteSize: number,
 }
 
-const Draggable = ({ id, content, categories, color, gridSize, sizeMultiplier, pos }: DraggableProps) => {
+const Draggable = ({ note, squareSize, noteSize }: DraggableProps) => {
   const {
     attributes,
     isDragging,
@@ -23,34 +17,38 @@ const Draggable = ({ id, content, categories, color, gridSize, sizeMultiplier, p
     setNodeRef,
     listeners,
   } = useDraggable({
-    id,
+    id: note._id,
   });
 
   return (
     <button
       ref={setNodeRef}
-      className={`${color} border-solid border-4 border-green-500`}
+      className={`${note.color} border-solid border-4 border-green-500`}
       style={{
         position: "absolute",
-        left: `${pos.x}px`,
-        top: `${pos.y}px`,
+        left: `${note.position.x}px`,
+        top: `${note.position.y}px`,
         transform: CSS.Translate.toString(transform),
         boxShadow: isDragging
           ? '-1px 0 15px 0 rgba(34, 33, 81, 0.01), 0px 15px 15px 0 rgba(34, 33, 81, 0.25)'
           : undefined,
-        width: gridSize * sizeMultiplier,
-        height: gridSize * sizeMultiplier,
+        width: squareSize * noteSize,
+        height: squareSize * noteSize,
       }}
       {...attributes}
       {...listeners}
     >
-      {content}
+      {note.content}
 
       <br />
 
       <span className="break-words">
-      {categories.join(',')}
+      {note.categories.join(',')}
       </span>
+
+      <br />
+
+      {note.rank ? <span>{note.rank}</span> : null}
     </button>
   );
 }
