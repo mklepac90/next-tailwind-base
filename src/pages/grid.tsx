@@ -89,22 +89,19 @@ const categorizeNote = (note: Note) => {
 };
 
 // assign a numerical ranking to a dropped note
-const rankNote = (note: Note, zones: number = 6) => {
+const rankNote = (note: Note, noOfZones: number = 6) => {
   const {x, y} = note.position;
   const sum = x + y;
   const buffer = ((GRID_DIMENSIONS * 2) * .1);
-  const maxSum = (GRID_DIMENSIONS * 2) - (NOTE_SIZE * GRID_SQUARE_SIZE * 2) - buffer
-  const zoneSize = maxSum / zones;
+  const upperThreshold = (GRID_DIMENSIONS * 2) - (NOTE_SIZE * GRID_SQUARE_SIZE * 2) - buffer; // rank 1 cards go here
+  const zoneSize = upperThreshold / noOfZones; // how big is each ranking zone
 
   let rank;
-  let threshold = maxSum;
-  for (let i = 1; i <= zones + 1; i++) {
+  for (let i = 1, threshold = upperThreshold; i <= noOfZones + 1; i++, threshold -= zoneSize) {
     if (sum >= threshold) {
       rank = i;
       break;
     };
-
-    threshold -= zoneSize;
   }
 
   return rank;
