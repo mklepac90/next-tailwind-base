@@ -58,6 +58,7 @@ const notesData: Note[] = [
   }
 ];
 
+// assign a quadrant name/category to a dropped note
 const categorizeNote = (note: Note) => {
   const categories: string[] = [];
   const axes = GRID_DIMENSIONS / 2;
@@ -87,18 +88,24 @@ const categorizeNote = (note: Note) => {
   return [...new Set(categories)];
 };
 
-const rankNote = (note: Note) => {
+// assign a numerical ranking to a dropped note
+const rankNote = (note: Note, zones: number = 6) => {
   const {x, y} = note.position;
   const sum = x + y;
+  const buffer = ((GRID_DIMENSIONS * 2) * .1);
+  const maxSum = (GRID_DIMENSIONS * 2) - (NOTE_SIZE * GRID_SQUARE_SIZE * 2) - buffer
+  const zoneSize = maxSum / zones;
 
   let rank;
-  if (sum >= 200) rank = 6;
-  if (sum >= 400) rank = 5;
-  if (sum >= 600) rank = 4;
-  if (sum >= 800) rank = 3;
-  if (sum >= 1000) rank = 2;
-  if (sum >= 1200 ) rank = 1;
-  if (sum < 200) rank = 7;
+  let threshold = maxSum;
+  for (let i = 1; i <= zones + 1; i++) {
+    if (sum >= threshold) {
+      rank = i;
+      break;
+    };
+
+    threshold -= zoneSize;
+  }
 
   return rank;
 };
@@ -106,9 +113,11 @@ const rankNote = (note: Note) => {
 export default function Grid() {
   const [notes, setNotes] = useState(notesData);
 
+  // what happens when we drop a note
   function handleDragEnd(event: DragEndEvent) {
     const {x, y} = event.delta;
 
+    // update values of note being handled
     const note: Note = notes.find((n) => n._id === event.active.id)!;
 
     note.position.x += x;
@@ -116,6 +125,7 @@ export default function Grid() {
     note.categories = categorizeNote(note);
     note.rank = rankNote(note);
 
+    // rebuild array of notes with updated note
     const notesPositioned = notes.map((n) => {
       if (n._id === note._id) return note;
       return n;
