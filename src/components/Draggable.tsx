@@ -23,14 +23,14 @@ const Draggable = ({ note, squareSize, noteSize }: DraggableProps) => {
   return (
     <button
       ref={setNodeRef}
-      className={`${note.color} p-2 shadow-md border border-gray-200`}
+      className={`${note.color} p-2 shadow-lg`}
       style={{
         position: "absolute",
         left: `${note.position.x}px`,
         top: `${note.position.y}px`,
         transform: CSS.Translate.toString(transform),
         boxShadow: isDragging
-          ? '-1px 0 15px 0 rgba(34, 33, 81, 0.01), 0px 15px 15px 0 rgba(34, 33, 81, 0.25)'
+          ? '-1px 0 15px 0 rgba(34, 33, 81, 0.01), 0px 5px 15px 0 rgba(34, 33, 81, 0.25)'
           : undefined,
         width: squareSize * noteSize,
         height: squareSize * noteSize,

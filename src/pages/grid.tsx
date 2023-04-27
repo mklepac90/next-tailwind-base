@@ -89,16 +89,16 @@ const categorizeNote = (note: Note) => {
 
 const rankNote = (note: Note) => {
   const {x, y} = note.position;
-  const zones = [1, 2, 3, 4, 5, 6];
-  const zoneSize = GRID_DIMENSIONS / zones.length;
-  let rank;
+  const sum = x + y;
 
-  for (const zone of zones) {
-    if (x >= (GRID_DIMENSIONS - (zone * zoneSize)) && y >= (GRID_DIMENSIONS - (zone * zoneSize))) {
-      rank = zone;
-      break;
-    }  
-  }
+  let rank;
+  if (sum >= 200) rank = 6;
+  if (sum >= 400) rank = 5;
+  if (sum >= 600) rank = 4;
+  if (sum >= 800) rank = 3;
+  if (sum >= 1000) rank = 2;
+  if (sum >= 1200 ) rank = 1;
+  if (sum < 200) rank = 7;
 
   return rank;
 };
@@ -128,15 +128,17 @@ export default function Grid() {
 
   return (
     <div className="mx-auto my-10 shadow-lg" style={{
+      borderRight: "1px solid #DCDCDC",
+      borderBottom: "1px solid #DCDCDC",
       position: "relative",
-      height: `${GRID_DIMENSIONS + 1}px`,
-      width: `${GRID_DIMENSIONS + 1}px`,
+      height: `${GRID_DIMENSIONS}px`,
+      width: `${GRID_DIMENSIONS}px`,
       background: 
       `linear-gradient(#DCDCDC, #DCDCDC) no-repeat center/2px 100%, linear-gradient(#DCDCDC, #DCDCDC) no-repeat center/100% 2px`
     
     }}>
     <DndContext onDragEnd={handleDragEnd} modifiers={[snapToGrid, restrictToParentElement]}>
-      <Droppable id={DROP_ID} gridSize={GRID_SQUARE_SIZE}>
+      <Droppable id={DROP_ID} gridDimensions={GRID_DIMENSIONS} squareSize={GRID_SQUARE_SIZE}>
         {
           notes.map((note) => (
             <Draggable key={note._id} note={note} squareSize={GRID_SQUARE_SIZE} noteSize={NOTE_SIZE}  />

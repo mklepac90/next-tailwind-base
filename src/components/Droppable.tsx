@@ -2,19 +2,21 @@ import { useDroppable } from '@dnd-kit/core'
 
 type DroppableProps = {
   id: string,
-  gridSize: number,
+  gridDimensions: number,
+  squareSize: number,
   children: React.ReactNode
 }
 
-const Droppable = ({id, gridSize, children}: DroppableProps) => {
+const Droppable = ({id, gridDimensions, squareSize, children}: DroppableProps) => {
   const {setNodeRef} = useDroppable({id});
 
   return (
     <div
     ref={setNodeRef}
-    className="w-full h-full"
     style={{
-      backgroundSize: `${gridSize}px ${gridSize}px`,
+      height: `${gridDimensions}px`,
+      width: `${gridDimensions}px`,
+      backgroundSize: `${squareSize}px ${squareSize}px`,
       backgroundImage: "linear-gradient(to right, #DCDCDC 1px, transparent 1px), linear-gradient(to bottom, #DCDCDC 1px, transparent 1px)"
     }}
     >
