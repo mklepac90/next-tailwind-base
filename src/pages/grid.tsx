@@ -96,6 +96,7 @@ const rankNote = (note: Note, noOfZones: number = 6) => {
   const upperThreshold = (GRID_DIMENSIONS * 2) - (NOTE_SIZE * GRID_SQUARE_SIZE * 2) - buffer; // rank 1 cards go here
   const zoneSize = upperThreshold / noOfZones; // how big is each ranking zone
 
+  // assign rank based on whatever zone a card is dropped in
   let rank;
   for (let i = 1, threshold = upperThreshold; i <= noOfZones + 1; i++, threshold -= zoneSize) {
     if (sum >= threshold) {
