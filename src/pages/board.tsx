@@ -1,67 +1,222 @@
-// KanbanBoard.tsx
-import { DndContext, rectIntersection } from "@dnd-kit/core";
-import KanbanLane from "@/components/KanbanLane";
-import AddCard from "@/components/AddCard";
-import { useState } from "react";
+import React, { useState } from 'react';
+import {
+  useSensors,
+  useSensor,
+  PointerSensor,
+  KeyboardSensor,
+  DndContext,
+  closestCorners,
+  DragEndEvent,
+  DragStartEvent,
+  DragOverEvent,
+  DragOverlay,
+  DropAnimation,
+  defaultDropAnimation,
+} from '@dnd-kit/core';
+import { sortableKeyboardCoordinates, arrayMove } from '@dnd-kit/sortable';
+import { BoardSections as BoardSectionsType } from '@/types';
+import { getTaskById } from '@/utils/tasks';
+import { findBoardSectionContainer, initializeBoard } from '@/utils/board';
+import BoardSection from '@/components/cardboard/BoardSection';
+import TaskItem from '@/components/cardboard/TaskItem';
+import { Task } from '@/types';
 
-export type Card = {
- title: string,
-};
+const INITIAL_TASKS: Task[] = [
+  {
+    id: '1',
+    title: 'Title 1',
+    description: 'Desc 1',
+    status: 'one-backlog',
+  },
+  {
+    id: '2',
+    title: 'Title 2',
+    description: 'Desc 2',
+    status: 'two-backlog',
+  },
+  {
+    id: '3',
+    title: 'Title 3',
+    description: 'Desc 3',
+    status: 'three-backlog',
+  },
+  {
+    id: '4',
+    title: 'Title 4',
+    description: 'Desc 4',
+    status: 'four-backlog',
+  },
+  {
+    id: '5',
+    title: 'Title 5',
+    description: 'Desc 4',
+    status: 'one-staging',
+  },
+  {
+    id: '6',
+    title: 'Title 6',
+    description: 'Desc 4',
+    status: 'four-staging',
+  },
+];
 
-export default function Board() {
-const [todoItems, setTodoItems] = useState<Array<Card>>([]);
-  const [doneItems, setDoneItems] = useState<Array<Card>>([]);
-  const [inProgressItems, setInProgressItems] = useState<Array<Card>>([]);
-  const [uItems, setuItems] = useState<Array<Card>>([]);
-  const addNewCard = (title: string) => {
-    setuItems([...uItems, { title }]);
+const STAGES: string[] = ['one', 'two', 'three', 'four'];
+
+const STEPS: string[] = [
+  'backlog',
+  'in progress',
+  'done',
+  'staging',
+];
+
+const BoardSectionList = () => {
+  const tasks = INITIAL_TASKS;
+  const initialBoardSections = initializeBoard(STAGES, STEPS, INITIAL_TASKS);
+  const [boardSections, setBoardSections] =
+    useState<BoardSectionsType>(initialBoardSections);
+
+  const [activeTaskId, setActiveTaskId] = useState<null | string>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragStart = ({ active }: DragStartEvent) => {
+    setActiveTaskId(active.id as string);
   };
 
+  const handleDragOver = ({ active, over }: DragOverEvent) => {
+    // Find the containers
+    const activeContainer = findBoardSectionContainer(
+      boardSections,
+      active.id as string
+    );
+    const overContainer = findBoardSectionContainer(
+      boardSections,
+      over?.id as string
+    );
+
+    if (
+      !activeContainer ||
+      !overContainer ||
+      activeContainer === overContainer
+    ) {
+      return;
+    }
+
+    setBoardSections((boardSection) => {
+      const activeItems = boardSection[activeContainer];
+      const overItems = boardSection[overContainer];
+
+      // Find the indexes for the items
+      const activeIndex = activeItems.findIndex(
+        (item) => item.id === active.id
+      );
+      const overIndex = overItems.findIndex((item) => item.id !== over?.id);
+
+      return {
+        ...boardSection,
+        [activeContainer]: [
+          ...boardSection[activeContainer].filter(
+            (item) => item.id !== active.id
+          ),
+        ],
+        [overContainer]: [
+          ...boardSection[overContainer].slice(0, overIndex),
+          boardSections[activeContainer][activeIndex],
+          ...boardSection[overContainer].slice(
+            overIndex,
+            boardSection[overContainer].length
+          ),
+        ],
+      };
+    });
+  };
+
+  const handleDragEnd = ({ active, over }: DragEndEvent) => {
+    const activeContainer = findBoardSectionContainer(
+      boardSections,
+      active.id as string
+    );
+    const overContainer = findBoardSectionContainer(
+      boardSections,
+      over?.id as string
+    );
+
+    if (
+      !activeContainer ||
+      !overContainer ||
+      activeContainer !== overContainer
+    ) {
+      return;
+    }
+
+    const activeIndex = boardSections[activeContainer].findIndex(
+      (task) => task.id === active.id
+    );
+    const overIndex = boardSections[overContainer].findIndex(
+      (task) => task.id === over?.id
+    );
+
+    if (activeIndex !== overIndex) {
+      setBoardSections((boardSection) => ({
+        ...boardSection,
+        [overContainer]: arrayMove(
+          boardSection[overContainer],
+          activeIndex,
+          overIndex
+        ),
+      }));
+    }
+
+    setActiveTaskId(null);
+  };
+
+  const dropAnimation: DropAnimation = {
+    ...defaultDropAnimation,
+  };
+
+  const task = activeTaskId ? getTaskById(tasks, activeTaskId) : null;
+
   return (
-    <DndContext
-      collisionDetection={rectIntersection}
-      onDragEnd={(e) => {
-        const container = e.over?.id;
-        const title = e.active.data.current?.title ?? "";
-        const index = e.active.data.current?.index ?? 0;
-        const parent = e.active.data.current?.parent ?? "ToDo";
-        if (container === "ToDo") {
-          setTodoItems([...todoItems, { title }]);
-        } else if (container === "Done") {
-          setDoneItems([...doneItems, { title }]);
-        } else if (container === "Unassigned") {
-          setuItems([...uItems, { title }]);
-        } else {
-          setInProgressItems([...inProgressItems, { title }]);
-        }
-        if (parent === "ToDo") {
-          setTodoItems([
-            ...todoItems.slice(0, index),
-            ...todoItems.slice(index + 1),
-          ]);
-        } else if (parent === "Done") {
-          setDoneItems([
-            ...doneItems.slice(0, index),
-            ...doneItems.slice(index + 1),
-          ]);
-        } else if (parent === "Unassigned") {
-          setuItems([...uItems.slice(0, index), ...uItems.slice(index + 1)]);
-        } else {
-          setInProgressItems([
-            ...inProgressItems.slice(0, index),
-            ...inProgressItems.slice(index + 1),
-          ]);
-        }
-      }}
-    >
-      <div className="flex-col">
-      <AddCard addCard={addNewCard} />
-        <div className="flex">
-          <KanbanLane title="ToDo" items={todoItems} />
-          <KanbanLane title="In Progress" items={inProgressItems} />
-          <KanbanLane title="Done" items={doneItems} />
-          <KanbanLane title="Unassigned" items={uItems} />
-        </div>
+    <div className="max-w-screen-xl mx-auto my-10">
+      <div className={`grid grid-cols-${STEPS.length} place-items-center ml-16 mb-1`}>
+        {STEPS.map((step) => (<span className="font-medium text-lg">{step}</span>))}
       </div>
-    </DndContext>
-  )};
+
+        <div className="flex">
+          <div className={`grid grid-rows-${STAGES.length} place-items-center mr-2`}>
+              {STAGES.map((stage) => (<span className="w-14 text-right break-words font-medium text-lg">{stage}</span>))}
+          </div>
+
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCorners}
+            onDragStart={handleDragStart}
+            onDragOver={handleDragOver}
+            onDragEnd={handleDragEnd}
+          >    
+            <div className={`flex-grow grid grid-rows-${STAGES.length} grid-cols-${STEPS.length} shadow-md bg-gray-100 rounded-md`}>
+              {Object.keys(boardSections).map((boardSectionKey) => (
+                <div className="border" key={boardSectionKey}>
+                  <BoardSection
+                    id={boardSectionKey}
+                    tasks={boardSections[boardSectionKey]}
+                  />
+                </div>
+              ))}
+
+              <DragOverlay dropAnimation={dropAnimation}>
+                {task ? <TaskItem task={task} /> : null}
+              </DragOverlay>
+            </div>
+          </DndContext>
+      </div>
+    </div>
+  );
+};
+
+export default BoardSectionList;
