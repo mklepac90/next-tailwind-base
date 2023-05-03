@@ -5,7 +5,7 @@ import {
   PointerSensor,
   KeyboardSensor,
   DndContext,
-  closestCorners,
+  rectIntersection,
   DragEndEvent,
   DragStartEvent,
   DragOverEvent,
@@ -183,23 +183,23 @@ const BoardSectionList = () => {
 
   return (
     <div className="max-w-screen-xl mx-auto my-10">
-      <div className={`grid grid-cols-${STEPS.length} place-items-center ml-16 mb-1`}>
-        {STEPS.map((step) => (<span className="font-medium text-lg">{step}</span>))}
+      <div className={`grid grid-cols-4 place-items-center ml-16 mb-1`}>
+        {STEPS.map((step) => (<span key={step} className="font-medium text-lg">{step}</span>))}
       </div>
 
         <div className="flex">
-          <div className={`grid grid-rows-${STAGES.length} place-items-center mr-2`}>
-              {STAGES.map((stage) => (<span className="w-14 text-right break-words font-medium text-lg">{stage}</span>))}
+          <div className={`grid grid-rows-4 place-items-center mr-2`}>
+              {STAGES.map((stage) => (<span key={stage} className="w-14 text-right break-words font-medium text-lg">{stage}</span>))}
           </div>
 
           <DndContext
             sensors={sensors}
-            collisionDetection={closestCorners}
+            collisionDetection={rectIntersection}
             onDragStart={handleDragStart}
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
           >    
-            <div className={`flex-grow grid grid-rows-${STAGES.length} grid-cols-${STEPS.length} shadow-md bg-gray-100 rounded-md`}>
+            <div className={`flex-grow grid grid-rows-4 grid-cols-4 border shadow-md bg-gray-100 rounded-md`}>
               {Object.keys(boardSections).map((boardSectionKey) => (
                 <div className="border" key={boardSectionKey}>
                   <BoardSection

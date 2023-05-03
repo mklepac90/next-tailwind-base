@@ -19,13 +19,12 @@ const BoardSection = ({ id, tasks }: BoardSectionProps) => {
   });
 
   return (
-    <div className="flex-col p-2 min-h-[10rem]">
-      <SortableContext
+    <SortableContext
         id={id}
         items={tasks}
         strategy={verticalListSortingStrategy}
       >
-        <div ref={setNodeRef} className="space-y-2">
+        <div ref={setNodeRef} className="flex-col p-2 min-h-[14rem] space-y-2">
           {tasks.map((task) => (
             <div key={task.id}>
               <SortableTaskItem id={task.id}>
@@ -35,7 +34,6 @@ const BoardSection = ({ id, tasks }: BoardSectionProps) => {
           ))}
         </div>
       </SortableContext>
-    </div>
   );
 };
 
