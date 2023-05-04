@@ -1,7 +1,33 @@
 import Head from "next/head";
 import { Input } from "@/components/ui/input";
+import { table, getPageContent } from "@/utils/airtable";
+import { StaticPageProps } from "@/types";
+import ReactMarkdown from 'react-markdown';
 
-export default function IndexPage() {
+export async function getStaticProps() {
+  try {
+    const items = await table.select({}).firstPage();
+    const pageContent = getPageContent('index', items);
+  
+    return {
+      props: {
+        pageContent
+      },
+    };
+  } catch (error) {
+    console.log(error);
+
+    return {
+      props: {
+        err: "Something went wrong 😕",
+      },
+    };
+  }
+}
+
+export default function IndexPage({ pageContent, err }: StaticPageProps ) {
+  if (err) return err;
+
   return (
     <>
       <Head>
@@ -12,10 +38,17 @@ export default function IndexPage() {
       </Head>
       <section className="container grid items-center gap-6 pt-6 pb-8 md:py-10">
         <div className="flex max-w-[980px] flex-col items-start gap-2">
-          <h1 className="text-3xl font-extrabold leading-tight tracking-tighter sm:text-3xl md:text-5xl lg:text-6xl">
-            Beautifully designed components <br className="hidden sm:inline" />
-            built with Radix UI and Tailwind CSS.
-          </h1>
+          <ReactMarkdown>
+            {pageContent?.goals}
+          </ReactMarkdown>
+
+          <ReactMarkdown>
+            {pageContent?.instructions}
+          </ReactMarkdown>
+
+          <a href={pageContent?.videoUrl} target="_blank">
+            {pageContent?.videoUrl}
+          </a>
         </div>
         <Input type="email" placeholder="Email" />
       </section>
