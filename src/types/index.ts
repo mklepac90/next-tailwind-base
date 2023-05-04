@@ -40,3 +40,35 @@ export type NavItem = {
   disabled?: boolean;
   external?: boolean;
 };
+
+export type Note = {
+  _id: string,
+  content: string,
+  categories: string[],
+  color: string,
+  rank: number | undefined,
+  position: {
+    x: number,
+    y: number
+  }
+};
+
+export type GridQuadrants = {
+  one: string,
+  two: string,
+  three: string,
+  four: string,
+};
+
+export type DroppableProps = {
+  id: string,
+  gridDimensions: number,
+  squareSize: number,
+  children: React.ReactNode
+};
+
+export type DraggableProps = {
+  note: Note,
+  squareSize: number,
+  noteSize: number,
+};

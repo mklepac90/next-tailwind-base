@@ -3,24 +3,13 @@ import Droppable from "@/components/Droppable";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { useMemo, useState } from "react";
 import { createSnapModifier, restrictToParentElement } from '@dnd-kit/modifiers';
+import { GridQuadrants, Note } from "@/types";
 
-const DROP_ID = 'grid';
-const GRID_DIMENSIONS = 800; // grid h & w 
-const QUADRANTS = {one: 'one', two: 'two', three: 'three', four: 'four'};
-const GRID_SQUARE_SIZE = 20; // size of each square within a grid
-const NOTE_SIZE = 6; // how many squares is note h & w
-
-export type Note = {
-  _id: string,
-  content: string,
-  categories: string[],
-  color: string,
-  rank: number | undefined,
-  position: {
-    x: number,
-    y: number
-  }
-};
+const DROP_ID: string = 'grid';
+const GRID_DIMENSIONS: number = 800; // grid h & w 
+const QUADRANTS: GridQuadrants = {one: 'one', two: 'two', three: 'three', four: 'four'};
+const GRID_SQUARE_SIZE: number = 20; // size of each square within a grid
+const NOTE_SIZE: number = 6; // how many squares is note h & w
 
 const notesData: Note[] = [
   {
@@ -59,7 +48,7 @@ const notesData: Note[] = [
 ];
 
 // assign a quadrant name/category to a dropped note
-const categorizeNote = (note: Note) => {
+const categorizeNote = (note: Note): string[] => {
   const categories: string[] = [];
   const axes = GRID_DIMENSIONS / 2;
   const {x, y} = note.position;
@@ -89,7 +78,7 @@ const categorizeNote = (note: Note) => {
 };
 
 // assign a numerical ranking to a dropped note
-const rankNote = (note: Note, noOfZones: number = 6) => {
+const rankNote = (note: Note, noOfZones: number = 6): number => {
   const {x, y} = note.position;
   const sum = x + y;
   const buffer = ((GRID_DIMENSIONS * 2) * .1);
@@ -109,7 +98,7 @@ const rankNote = (note: Note, noOfZones: number = 6) => {
 };
 
 export default function Grid() {
-  const [notes, setNotes] = useState(notesData);
+  const [notes, setNotes] = useState<Note[]>(notesData);
 
   // what happens when we drop a note
   function handleDragEnd(event: DragEndEvent) {

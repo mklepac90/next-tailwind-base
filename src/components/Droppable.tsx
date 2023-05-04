@@ -1,11 +1,5 @@
 import { useDroppable } from '@dnd-kit/core'
-
-type DroppableProps = {
-  id: string,
-  gridDimensions: number,
-  squareSize: number,
-  children: React.ReactNode
-}
+import { DroppableProps } from "@/types";
 
 const Droppable = ({id, gridDimensions, squareSize, children}: DroppableProps) => {
   const {setNodeRef} = useDroppable({id});

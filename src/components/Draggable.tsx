@@ -1,13 +1,7 @@
 import { useDraggable } from "@dnd-kit/core";
 import React from 'react'
 import { CSS } from '@dnd-kit/utilities';
-import { Note } from "@/pages/grid";
-
-type DraggableProps = {
-  note: Note,
-  squareSize: number,
-  noteSize: number,
-}
+import { DraggableProps } from "@/types";
 
 const Draggable = ({ note, squareSize, noteSize }: DraggableProps) => {
   const {
