@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export type Task = {
   id: string;
   title: string;
@@ -9,17 +11,28 @@ export type BoardSections = {
   [name: string]: Task[];
 };
 
-export type PageContent = {
-  page: string,
-  goals: string,
-  instructions: string,
-  videoUrl: string,
-};
+export const PageContent = z.object({
+  goals: z.string(),
+  instructions: z.string(),
+  videoUrl: z.string(),
+});
+
+export type PageContentType = z.infer<typeof PageContent>;
 
 export type StaticPageProps = {
-  pageContent?: PageContent,
+  pageContent?: PageContentType,
   err?: string
 };
+
+const PageContentWithName = PageContent.extend({
+  page: z.string(),
+});
+
+export const AirtableRecords = z.array(z.object(
+    { fields: PageContentWithName }
+  ));
+
+export type AirtableRecordsType = z.infer<typeof AirtableRecords>;
 
 export type NavItem = {
   title: string;

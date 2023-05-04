@@ -1,4 +1,4 @@
-import { PageContent } from "@/types";
+import { PageContent, PageContentType, AirtableRecordsType } from "@/types";
 
 const Airtable = require("airtable");
 
@@ -14,13 +14,10 @@ const base = Airtable.base('appyDUZyarAXWHWQl');
 const table = base('tblTNHE0GPh1T0Rbs');
 
 // return minified record for a specific page
-const getPageContent = (page: string, records: any[]): PageContent => {
+const getPageContent = (page: string, records: AirtableRecordsType): PageContentType => {
   const record = records.find(record => record.fields.page === page);
 
-  return {
-    ...record.fields
-  };
+  return PageContent.parse(record.fields);
 };
-
 
 export { table, getPageContent };

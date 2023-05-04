@@ -3,11 +3,13 @@ import { Input } from "@/components/ui/input";
 import { table, getPageContent } from "@/utils/airtable";
 import { StaticPageProps } from "@/types";
 import ReactMarkdown from 'react-markdown';
+import { AirtableRecords } from "@/types";
 
 export async function getStaticProps() {
   try {
     const items = await table.select({}).firstPage();
-    const pageContent = getPageContent('index', items);
+    const parsedItems = AirtableRecords.parse(items);
+    const pageContent = getPageContent('index', parsedItems);
   
     return {
       props: {
