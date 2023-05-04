@@ -2,7 +2,7 @@ import { BoardSections, Task } from '@/types';
 import { getTasksByStatus } from './tasks';
 
 
-export const initializeBoard = (stages:string[], steps:string[], tasks: Task[]) => {
+export const initializeBoard = (stages: string[], steps: string[], tasks: Task[]) => {
   const sections = stages.flatMap((stage) => {
     return steps.map(step => {
       return `${stage}-${step}`
@@ -25,7 +25,7 @@ export const findBoardSectionContainer = (
   boardSections: BoardSections,
   id: string
 ) => {
-  // useSortable also creates a droppable... id can be a sortable or a section
+  // sortables are also droppables... id can be a sortable or a container
   if (id in boardSections) {
     return id;
   };

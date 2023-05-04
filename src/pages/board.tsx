@@ -88,13 +88,12 @@ const BoardSectionList = () => {
     setActiveTaskId(active.id as string);
   };
 
-  // update containers when a draggable is moved over a new droppable
+  // update containers when a draggable is moved over a new container
   const handleDragOver = ({ active, over }: DragOverEvent) => {
     // Find the containers
-    const originContainer = findBoardSectionContainer(
-      boardSections,
-      active.id as string
-    );
+    const originContainer = active.data.current.sortable.containerId;
+
+    // The actual droppable can be a container OR a sortable
     const newContainer = findBoardSectionContainer(
       boardSections,
       over?.id as string
@@ -103,18 +102,14 @@ const BoardSectionList = () => {
     if (
       !originContainer ||
       !newContainer ||
+      // don't need to do anything if moving within same container
       originContainer === newContainer
     ) {
       return;
     };
 
     setBoardSections((boardSection) => {
-      const originItems = boardSection[originContainer];
-
-      // Find the index for the draggable
-      const activeIndex = originItems.findIndex(
-        (item) => item.id === active.id
-      );
+      const activeIndex = active.data.current.sortable.index;
 
       return {
         ...boardSection,
@@ -142,9 +137,10 @@ const BoardSectionList = () => {
 
     const activeIndex = active.data.current.sortable.index;
     const overIndex = over.data.current.sortable.index;
-    const container = over.data.current.sortable.containerId;
-
+    
     if (activeIndex !== overIndex) {
+      const container = over.data.current.sortable.containerId;
+
       setBoardSections((boardSection) => ({
         ...boardSection,
         [container]: arrayMove(
