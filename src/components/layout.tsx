@@ -2,10 +2,9 @@ import { Fragment, useState } from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
 import {
   Bars3Icon,
-  BellIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, Cog8ToothIcon} from '@heroicons/react/20/solid'
 import Sidebar from './sidebar'
 import Footer from './footer'
 
@@ -97,30 +96,27 @@ export default function Layout({ children }: LayoutProps) {
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
 
-          {/* Separator */}
-          <div className="h-6 w-px bg-gray-200 lg:hidden" aria-hidden="true" />
-
           <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-            <form className="relative flex flex-1" action="#" method="GET">
-              <label htmlFor="search-field" className="sr-only">
-                Search
-              </label>
-              <MagnifyingGlassIcon
-                className="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400"
-                aria-hidden="true"
-              />
-              <input
-                id="search-field"
-                className="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
-                placeholder="Search..."
-                type="search"
-                name="search"
-              />
-            </form>
+            <div className="relative flex flex-1 items-center space-x-4 lg:ml-10 lg:space-x-10">
+              <a
+                href="#"
+                className="font-medium text-gray-900 hover:text-gray-700"
+              >
+                About
+              </a>
+
+              <a
+                href="#"
+                className="font-medium text-gray-900 hover:text-gray-700"
+              >
+                FAQ
+              </a>
+            </div>
+
             <div className="flex items-center gap-x-4 lg:gap-x-6">
-              <button type="button" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
+              <button type="button" className="-m-2.5 p-2.5 text-red-500 hover:text-red-600">
                 <span className="sr-only">View notifications</span>
-                <BellIcon className="h-6 w-6" aria-hidden="true" />
+                <Cog8ToothIcon className="h-6 w-6" aria-hidden="true" />
               </button>
 
               {/* Separator */}
@@ -176,7 +172,7 @@ export default function Layout({ children }: LayoutProps) {
         
         {/* Content */}
         <main className="bg-neutral-50/50 py-16 lg:pl-72">
-          <div className="max-w-screen-xl mx-auto min-h- px-4 lg:px-0">
+          <div className="max-w-screen-xl mx-auto min-h-screen px-4 lg:px-0">
             {children}
           </div>
         </main>
