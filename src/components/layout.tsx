@@ -171,7 +171,7 @@ export default function Layout({ children }: LayoutProps) {
         </div>
         
         {/* Content */}
-        <main className="bg-neutral-50/50 py-16 lg:pl-72">
+        <main className="bg-neutral-50/50 py-8 lg:pl-72 lg:py-16">
           <div className="max-w-screen-xl mx-auto min-h-screen px-4 lg:px-0">
             {children}
           </div>

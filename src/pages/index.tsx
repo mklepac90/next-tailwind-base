@@ -40,7 +40,7 @@ export default function IndexPage({ pageContent, err }: StaticPageProps ) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="flex flex-col gap-20">
+      <div className="flex flex-col gap-10 lg:gap-20">
         <PageHeading heading="Persona" />
         
         <div>
@@ -54,9 +54,7 @@ export default function IndexPage({ pageContent, err }: StaticPageProps ) {
         <div>
           <SectionHeading heading="video" />
 
-          <a href={pageContent?.videoUrl} target="_blank">
-            {pageContent?.videoUrl}
-          </a>
+          <iframe className="w-4/6 aspect-video rounded-xl" src={pageContent?.videoUrl} />
         </div>
         
         <div>
