@@ -114,7 +114,7 @@ export default function Layout({ children }: LayoutProps) {
             </div>
 
             <div className="flex items-center gap-x-4 lg:gap-x-6">
-              <button type="button" className="-m-2.5 p-2.5 text-red-500 hover:text-red-600">
+              <button type="button" className="-m-2.5 p-2.5 text-red-600 hover:text-red-700">
                 <span className="sr-only">View notifications</span>
                 <Cog8ToothIcon className="h-6 w-6" aria-hidden="true" />
               </button>

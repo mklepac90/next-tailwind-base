@@ -1,110 +1,147 @@
 import React from 'react'
 
+import { Disclosure } from '@headlessui/react'
+import { ChevronRightIcon } from '@heroicons/react/20/solid'
 import {
-  CalendarIcon,
-  ChartPieIcon,
-  Cog6ToothIcon,
-  DocumentDuplicateIcon,
-  FolderIcon,
   HomeIcon,
   UsersIcon,
-} from '@heroicons/react/24/outline'
+  WrenchScrewdriverIcon,
+  CircleStackIcon,
+  RocketLaunchIcon
+} from '@heroicons/react/24/solid'
+
+const NAVIGATION = [
+  { name: 'Start a New Journey', href: '#', icon: HomeIcon, current: false },
+  {
+    name: 'Phase 1: Understanding Your Users',
+    icon: UsersIcon,
+    current: true,
+    children: [
+      { name: 'Persona', href: '#', current: true },
+      { name: 'Empathy Map', href: '#', current: false },
+      { name: 'Journey Map', href: '#', current: false },
+      { name: 'Pain Points', href: '#', current: false },
+    ],
+  },
+  {
+    name: 'Phase 2: Collecting and Understanding Data',
+    icon: CircleStackIcon,
+    current: false,
+    children: [
+      { name: 'GraphQL API', href: '#', current: false },
+      { name: 'iOS App', href: '#', current: false },
+      { name: 'Android App', href: '#', current: false },
+      { name: 'New Customer Portal', href: '#', current: false },
+    ],
+  },
+  {
+    name: 'Phase 3: Turning Problems into Solutions',
+    icon: WrenchScrewdriverIcon,
+    current: false,
+    children: [
+      { name: 'GraphQL API', href: '#', current: false },
+      { name: 'iOS App', href: '#', current: false },
+      { name: 'Android App', href: '#', current: false },
+      { name: 'New Customer Portal', href: '#', current: false },
+    ],
+  },
+  {
+    name: 'Phase 4: Pilot Program',
+    icon: RocketLaunchIcon,
+    current: false,
+    children: [
+      { name: 'GraphQL API', href: '#', current: false },
+      { name: 'iOS App', href: '#', current: false },
+      { name: 'Android App', href: '#', current: false },
+      { name: 'New Customer Portal', href: '#', current: false },
+    ],
+  },
+]
 
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-const teams = [
-  { id: 1, name: 'Heroicons', href: '#', initial: 'H', current: false },
-  { id: 2, name: 'Tailwind Labs', href: '#', initial: 'T', current: false },
-  { id: 3, name: 'Workcation', href: '#', initial: 'W', current: false },
-]
-
-const navigation = [
-  { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-  { name: 'Team', href: '#', icon: UsersIcon, current: false },
-  { name: 'Projects', href: '#', icon: FolderIcon, current: false },
-  { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-  { name: 'Documents', href: '#', icon: DocumentDuplicateIcon, current: false },
-  { name: 'Reports', href: '#', icon: ChartPieIcon, current: false },
-]
-
 const Sidebar = () => {
   return (
     <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 py-4">
-      <nav className="flex flex-1 flex-col">
+      <nav className="flex flex-1 flex-col text-gray-700 font-semibold text-sm">
         <ul role="list" className="flex flex-1 flex-col gap-y-7">
           <li>
             <ul role="list" className="-mx-2 space-y-1">
-              {navigation.map((item) => (
+              {NAVIGATION.map((item) => (
                 <li key={item.name}>
-                  <a
-                    href={item.href}
-                    className={classNames(
-                      item.current
-                        ? 'bg-gray-50 text-indigo-600'
-                        : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
-                      'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                    )}
-                  >
-                    <item.icon
+                  {!item.children ? (
+                    <a
+                      href={item.href}
                       className={classNames(
-                        item.current ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-600',
-                        'h-6 w-6 shrink-0'
+                        item.current ? 'bg-black' : 'hover:bg-black',
+                        item.current ? 'text-white' : 'hover:text-white',
+                        'group flex gap-x-3 rounded-md p-2 leading-6'
                       )}
-                      aria-hidden="true"
-                    />
-                    {item.name}
-                  </a>
+                    >
+                      <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" />
+                      {item.name}
+                    </a>
+                  ) : (
+                    <Disclosure as="div">
+                      {({ open }) => (
+                        <>
+                          <Disclosure.Button
+                            className={classNames(
+                              item.current ? 'bg-black' : 'hover:bg-black',
+                              item.current ? 'text-white' : 'hover:text-white',
+                              'flex items-center w-full text-left rounded-md p-2 gap-x-3 leading-6'
+                            )}
+                          >
+                            <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" />
+                            {item.name}
+                            <ChevronRightIcon
+                              className={classNames(
+                                open && 'rotate-90',
+                                'ml-auto h-5 w-5 shrink-0'
+                              )}
+                              aria-hidden="true"
+                            />
+                          </Disclosure.Button>
+                          <Disclosure.Panel as="ul" className="mt-1 px-2">
+                            {item.children.map((subItem) => (
+                              <li key={subItem.name}>
+                                {/* 44px */}
+                                <Disclosure.Button
+                                  as="a"
+                                  href={subItem.href}
+                                  className={classNames(
+                                    subItem.current ? 'bg-red-700' : 'hover:bg-red-700',
+                                    subItem.current ? 'text-white' : 'hover:text-white',
+                                    'block rounded-md mt-1 py-2 pr-2 pl-9 leading-6'
+                                  )}
+                                >
+                                  {subItem.name}
+                                </Disclosure.Button>
+                              </li>
+                            ))}
+                          </Disclosure.Panel>
+                        </>
+                      )}
+                    </Disclosure>
+                  )}
                 </li>
               ))}
             </ul>
           </li>
           <li>
-            <div className="text-xs font-semibold leading-6 text-gray-400">Your teams</div>
-            <ul role="list" className="-mx-2 mt-2 space-y-1">
-              {teams.map((team) => (
-                <li key={team.name}>
-                  <a
-                    href={team.href}
-                    className={classNames(
-                      team.current
-                        ? 'bg-gray-50 text-indigo-600'
-                        : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
-                      'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                    )}
-                  >
-                    <span
-                      className={classNames(
-                        team.current
-                          ? 'text-indigo-600 border-indigo-600'
-                          : 'text-gray-400 border-gray-200 group-hover:border-indigo-600 group-hover:text-indigo-600',
-                        'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white'
-                      )}
-                    >
-                      {team.initial}
-                    </span>
-                    <span className="truncate">{team.name}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <span>Persona</span>
           </li>
-          <li className="mt-auto">
-            <a
-              href="#"
-              className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
-            >
-              <Cog6ToothIcon
-                className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600"
-                aria-hidden="true"
-              />
-              Settings
-            </a>
+          <li>
+            <span>Sticky Notes</span>
+          </li>
+          <li>
+            <span>Reminder</span>
           </li>
         </ul>
       </nav>
-  </div>
+    </div>
   )
 }
 
