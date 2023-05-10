@@ -161,7 +161,7 @@ const BoardSectionList = () => {
   const task = activeTaskId ? getTaskById(tasks, activeTaskId) : null;
 
   return (
-    <div className="max-w-screen-xl mx-auto my-10">
+    <div>
       <div className={`grid grid-cols-4 place-items-center ml-16 mb-1`}>
         {STEPS.map((step) => (<span key={step} className="font-medium text-lg">{step}</span>))}
       </div>
@@ -178,7 +178,7 @@ const BoardSectionList = () => {
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
           >    
-            <div className={`flex-grow grid grid-rows-4 grid-cols-4 border shadow-md bg-gray-100 rounded-md`}>
+            <div className={`flex-grow grid grid-rows-4 grid-cols-4 border shadow-md bg-gray-50 rounded-md`}>
               {Object.keys(boardSections).map((boardSectionKey) => (
                 <div className="border" key={boardSectionKey}>
                   <BoardSection

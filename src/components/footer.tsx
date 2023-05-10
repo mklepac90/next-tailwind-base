@@ -3,7 +3,7 @@ import React from 'react'
 const Footer = () => {
   return (
     // <!-- Footer section with social media icons and newsletter sign-up -->
-<footer className="bg-neutral-900 text-center text-white">
+<footer className="bg-neutral-900 text-center text-white lg:pl-72">
   <div className="container px-6 pt-6">
     {/* <!-- Social media icons container --> */}
     <div className="mb-6 flex justify-center">
@@ -239,10 +239,10 @@ const Footer = () => {
   <div
     className="p-4 text-center"
     style={{backgroundColor: "rgba(0, 0, 0, 0.2)"}}>
-    © 2023 Copyright:
-    <a className="text-white" href="https://tailwind-elements.com/"
-      >Tailwind Elements</a
-    >
+    © 2023 Copyright: 
+    <a className="text-white" href="https://tailwind-elements.com/">
+      Me
+    </a>
   </div>
 </footer>
   )

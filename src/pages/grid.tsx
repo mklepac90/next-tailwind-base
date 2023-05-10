@@ -124,25 +124,25 @@ export default function Grid() {
   const snapToGrid = useMemo(() => createSnapModifier(GRID_SQUARE_SIZE), [GRID_SQUARE_SIZE]);
 
   return (
-    <div className="mx-auto my-10 shadow-lg" style={{
+    <div className="shadow-lg mx-auto" style={{
       borderRight: "1px solid #DCDCDC",
       borderBottom: "1px solid #DCDCDC",
       position: "relative",
       height: `${GRID_DIMENSIONS}px`,
       width: `${GRID_DIMENSIONS}px`,
       background: 
-      `linear-gradient(#DCDCDC, #DCDCDC) no-repeat center/2px 100%, linear-gradient(#DCDCDC, #DCDCDC) no-repeat center/100% 2px`
+      `linear-gradient(#DCDCDC, #DCDCDC) no-repeat center/2px 100%, linear-gradient(#DCDCDC, #DCDCDC) no-repeat center/100% 2px white`
     
     }}>
-    <DndContext onDragEnd={handleDragEnd} modifiers={[snapToGrid, restrictToParentElement]}>
-      <Droppable id={DROP_ID} gridDimensions={GRID_DIMENSIONS} squareSize={GRID_SQUARE_SIZE}>
-        {
-          notes.map((note) => (
-            <Draggable key={note._id} note={note} squareSize={GRID_SQUARE_SIZE} noteSize={NOTE_SIZE}  />
-          ))
-        }
-      </Droppable>
-    </DndContext>
-  </div>
+      <DndContext onDragEnd={handleDragEnd} modifiers={[snapToGrid, restrictToParentElement]}>
+        <Droppable id={DROP_ID} gridDimensions={GRID_DIMENSIONS} squareSize={GRID_SQUARE_SIZE}>
+          {
+            notes.map((note) => (
+              <Draggable key={note._id} note={note} squareSize={GRID_SQUARE_SIZE} noteSize={NOTE_SIZE}  />
+            ))
+          }
+        </Droppable>
+      </DndContext>
+    </div>
   );
 }
