@@ -1,9 +1,10 @@
 import Head from "next/head";
-import { Input } from "@/components/ui/input";
 import { table, getPageContent } from "@/utils/airtable";
 import { StaticPageProps } from "@/types";
 import ReactMarkdown from 'react-markdown';
 import { AirtableRecords } from "@/types";
+import PageHeading from "@/components/page-heading"
+import SectionHeading from "@/components/section-heading"
 
 export async function getStaticProps() {
   try {
@@ -38,22 +39,34 @@ export default function IndexPage({ pageContent, err }: StaticPageProps ) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <section className="container grid items-center gap-6 pt-6 pb-8 md:py-10">
-        <div className="flex max-w-[980px] flex-col items-start gap-2">
+
+      <div className="flex flex-col gap-20">
+        <PageHeading heading="Persona" />
+        
+        <div>
+          <SectionHeading heading="goals" />
+
           <ReactMarkdown>
             {pageContent?.goals}
           </ReactMarkdown>
-
-          <ReactMarkdown>
-            {pageContent?.instructions}
-          </ReactMarkdown>
+        </div>
+        
+        <div>
+          <SectionHeading heading="video" />
 
           <a href={pageContent?.videoUrl} target="_blank">
             {pageContent?.videoUrl}
           </a>
         </div>
-        <Input type="email" placeholder="Email" />
-      </section>
-      </>
+        
+        <div>
+          <SectionHeading heading="instructions" />
+
+          <ReactMarkdown>
+            {pageContent?.instructions}
+          </ReactMarkdown>
+        </div>
+      </div>
+    </>
   );
 }
