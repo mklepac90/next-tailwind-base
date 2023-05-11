@@ -1,4 +1,9 @@
-import { PageContent, PageContentType, AirtableRecordsType } from "@/types";
+import { 
+  PageContent, 
+  PageContentType, 
+  AirtableRecordsType, 
+  AirtableRecords 
+} from "@/types";
 
 const Airtable = require("airtable");
 
@@ -20,4 +25,20 @@ const getPageContent = (page: string, records: AirtableRecordsType): PageContent
   return PageContent.parse(record.fields);
 };
 
-export { table, getPageContent };
+const getAirtableDataForPage = async (pageTitle: string) => {
+  try {
+    const items = await table.select({}).firstPage();
+    const parsedItems = AirtableRecords.parse(items);
+    const pageContent = getPageContent(pageTitle, parsedItems);
+  
+    return pageContent
+  } catch (error) {
+    return {
+      goals: '',
+      instructions: '',
+      videoUrl: '',
+    }
+  }
+}
+
+export default getAirtableDataForPage;

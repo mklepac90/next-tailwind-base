@@ -20,8 +20,7 @@ export const PageContent = z.object({
 export type PageContentType = z.infer<typeof PageContent>;
 
 export type StaticPageProps = {
-  pageContent?: PageContentType,
-  err?: string
+  pageContent: PageContentType,
 };
 
 const PageContentWithName = PageContent.extend({

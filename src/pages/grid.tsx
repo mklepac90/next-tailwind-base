@@ -4,6 +4,9 @@ import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { useMemo, useState } from "react";
 import { createSnapModifier, restrictToParentElement } from '@dnd-kit/modifiers';
 import { GridQuadrants, Note } from "@/types";
+import PageInfo from '@/components/page-info';
+import getAirtableDataForPage from '@/utils/airtable';
+import { StaticPageProps } from "@/types";
 
 const DROP_ID: string = 'grid';
 const GRID_DIMENSIONS: number = 800; // grid h & w 
@@ -97,7 +100,7 @@ const rankNote = (note: Note, noOfZones: number = 6): number => {
   return rank;
 };
 
-export default function Grid() {
+const Grid = ({ pageContent }: StaticPageProps) => {
   const [notes, setNotes] = useState<Note[]>(notesData);
 
   // what happens when we drop a note
@@ -124,25 +127,46 @@ export default function Grid() {
   const snapToGrid = useMemo(() => createSnapModifier(GRID_SQUARE_SIZE), [GRID_SQUARE_SIZE]);
 
   return (
-    <div className="shadow-lg mx-auto" style={{
-      borderRight: "1px solid #DCDCDC",
-      borderBottom: "1px solid #DCDCDC",
-      position: "relative",
-      height: `${GRID_DIMENSIONS}px`,
-      width: `${GRID_DIMENSIONS}px`,
-      background: 
-      `linear-gradient(#DCDCDC, #DCDCDC) no-repeat center/2px 100%, linear-gradient(#DCDCDC, #DCDCDC) no-repeat center/100% 2px white`
-    
-    }}>
-      <DndContext onDragEnd={handleDragEnd} modifiers={[snapToGrid, restrictToParentElement]}>
-        <Droppable id={DROP_ID} gridDimensions={GRID_DIMENSIONS} squareSize={GRID_SQUARE_SIZE}>
-          {
-            notes.map((note) => (
-              <Draggable key={note._id} note={note} squareSize={GRID_SQUARE_SIZE} noteSize={NOTE_SIZE}  />
-            ))
-          }
-        </Droppable>
-      </DndContext>
-    </div>
+    <>
+      <PageInfo 
+      title="Grid"
+      goals={pageContent.goals} 
+      instructions={pageContent.instructions} 
+      videoUrl={pageContent.videoUrl} 
+      />
+
+      <div className="shadow-lg mx-auto" style={{
+        borderRight: "1px solid #DCDCDC",
+        borderBottom: "1px solid #DCDCDC",
+        position: "relative",
+        height: `${GRID_DIMENSIONS}px`,
+        width: `${GRID_DIMENSIONS}px`,
+        background: 
+        `linear-gradient(#DCDCDC, #DCDCDC) no-repeat center/2px 100%, linear-gradient(#DCDCDC, #DCDCDC) no-repeat center/100% 2px white`
+      
+      }}>
+        <DndContext onDragEnd={handleDragEnd} modifiers={[snapToGrid, restrictToParentElement]}>
+          <Droppable id={DROP_ID} gridDimensions={GRID_DIMENSIONS} squareSize={GRID_SQUARE_SIZE}>
+            {
+              notes.map((note) => (
+                <Draggable key={note._id} note={note} squareSize={GRID_SQUARE_SIZE} noteSize={NOTE_SIZE}  />
+              ))
+            }
+          </Droppable>
+        </DndContext>
+      </div>
+    </>
   );
 }
+
+export async function getStaticProps() {
+  const pageContent = await getAirtableDataForPage('grid');
+
+  return {
+    props: {
+      pageContent
+    },
+  };
+}
+
+export default Grid;

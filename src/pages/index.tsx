@@ -1,36 +1,9 @@
 import Head from "next/head";
-import { table, getPageContent } from "@/utils/airtable";
 import { StaticPageProps } from "@/types";
-import ReactMarkdown from 'react-markdown';
-import { AirtableRecords } from "@/types";
-import PageHeading from "@/components/page-heading"
-import SectionHeading from "@/components/section-heading"
+import PageInfo from '@/components/page-info';
+import getAirtableDataForPage from '@/utils/airtable';
 
-export async function getStaticProps() {
-  try {
-    const items = await table.select({}).firstPage();
-    const parsedItems = AirtableRecords.parse(items);
-    const pageContent = getPageContent('index', parsedItems);
-  
-    return {
-      props: {
-        pageContent
-      },
-    };
-  } catch (error) {
-    console.log(error);
-
-    return {
-      props: {
-        err: "Something went wrong 😕",
-      },
-    };
-  }
-}
-
-export default function IndexPage({ pageContent, err }: StaticPageProps ) {
-  if (err) return err;
-
+const IndexPage = ({ pageContent }: StaticPageProps) => {
   return (
     <>
       <Head>
@@ -40,31 +13,24 @@ export default function IndexPage({ pageContent, err }: StaticPageProps ) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="flex flex-col gap-10 lg:gap-20">
-        <PageHeading heading="Persona" />
-        
-        <div>
-          <SectionHeading heading="goals" />
-
-          <ReactMarkdown>
-            {pageContent?.goals}
-          </ReactMarkdown>
-        </div>
-        
-        <div>
-          <SectionHeading heading="video" />
-
-          <iframe className="w-4/6 aspect-video rounded-xl" src={pageContent?.videoUrl} />
-        </div>
-        
-        <div>
-          <SectionHeading heading="instructions" />
-
-          <ReactMarkdown>
-            {pageContent?.instructions}
-          </ReactMarkdown>
-        </div>
-      </div>
+      <PageInfo 
+        title="Persona"
+        goals={pageContent.goals} 
+        instructions={pageContent.instructions} 
+        videoUrl={pageContent.videoUrl} 
+      />
     </>
   );
 }
+
+export async function getStaticProps() {
+  const pageContent = await getAirtableDataForPage('index');
+
+  return {
+    props: {
+      pageContent
+    },
+  };
+}
+
+export default IndexPage;

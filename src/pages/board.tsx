@@ -19,7 +19,9 @@ import { getTaskById } from '@/utils/tasks';
 import { findBoardSectionContainer, initializeBoard } from '@/utils/board';
 import BoardSection from '@/components/cardboard/BoardSection';
 import TaskItem from '@/components/cardboard/TaskItem';
-import { Task } from '@/types';
+import { Task, StaticPageProps } from '@/types';
+import PageInfo from '@/components/page-info';
+import getAirtableDataForPage from '@/utils/airtable';
 
 const INITIAL_TASKS: Task[] = [
   {
@@ -69,7 +71,7 @@ const STEPS: string[] = [
   'staging',
 ];
 
-const BoardSectionList = () => {
+const Board = ({ pageContent }: StaticPageProps) => {
   const tasks = INITIAL_TASKS;
   const initialBoardSections = initializeBoard(STAGES, STEPS, tasks);
   const [boardSections, setBoardSections] =
@@ -161,41 +163,60 @@ const BoardSectionList = () => {
   const task = activeTaskId ? getTaskById(tasks, activeTaskId) : null;
 
   return (
-    <div>
-      <div className={`grid grid-cols-4 place-items-center ml-16 mb-1`}>
-        {STEPS.map((step) => (<span key={step} className="font-medium text-lg">{step}</span>))}
-      </div>
+    <>
+      <PageInfo   
+        title="Board"
+        goals={pageContent.goals} 
+        instructions={pageContent.instructions} 
+        videoUrl={pageContent.videoUrl}  
+      />
 
-        <div className="flex">
-          <div className={`grid grid-rows-4 place-items-center mr-2`}>
-              {STAGES.map((stage) => (<span key={stage} className="w-14 text-right break-words font-medium text-lg">{stage}</span>))}
-          </div>
+      <div>
+        <div className={`grid grid-cols-4 place-items-center ml-16 mb-1`}>
+          {STEPS.map((step) => (<span key={step} className="font-medium text-lg">{step}</span>))}
+        </div>
 
-          <DndContext
-            sensors={sensors}
-            collisionDetection={rectIntersection}
-            onDragStart={handleDragStart}
-            onDragOver={handleDragOver}
-            onDragEnd={handleDragEnd}
-          >    
-            <div className={`flex-grow grid grid-rows-4 grid-cols-4 border shadow-md bg-gray-50 rounded-md`}>
-              {Object.keys(boardSections).map((boardSectionKey) => (
-                <div className="border" key={boardSectionKey}>
-                  <BoardSection
-                    id={boardSectionKey}
-                    tasks={boardSections[boardSectionKey]}
-                  />
-                </div>
-              ))}
-
-              <DragOverlay dropAnimation={dropAnimation}>
-                {task ? <TaskItem task={task} /> : null}
-              </DragOverlay>
+          <div className="flex">
+            <div className={`grid grid-rows-4 place-items-center mr-2`}>
+                {STAGES.map((stage) => (<span key={stage} className="w-14 text-right break-words font-medium text-lg">{stage}</span>))}
             </div>
-          </DndContext>
+
+            <DndContext
+              sensors={sensors}
+              collisionDetection={rectIntersection}
+              onDragStart={handleDragStart}
+              onDragOver={handleDragOver}
+              onDragEnd={handleDragEnd}
+            >    
+              <div className={`flex-grow grid grid-rows-4 grid-cols-4 border shadow-md bg-gray-50 rounded-md`}>
+                {Object.keys(boardSections).map((boardSectionKey) => (
+                  <div className="border" key={boardSectionKey}>
+                    <BoardSection
+                      id={boardSectionKey}
+                      tasks={boardSections[boardSectionKey]}
+                    />
+                  </div>
+                ))}
+
+                <DragOverlay dropAnimation={dropAnimation}>
+                  {task ? <TaskItem task={task} /> : null}
+                </DragOverlay>
+              </div>
+            </DndContext>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
-export default BoardSectionList;
+export async function getStaticProps() {
+  const pageContent = await getAirtableDataForPage('board');
+
+  return {
+    props: {
+      pageContent
+    },
+  };
+}
+
+export default Board;
